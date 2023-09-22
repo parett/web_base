@@ -1,0 +1,22 @@
+body{
+	font-family: sans-serif;
+	margin:8px !important;
+}
+.header-container{
+	display:flex;
+	justify-content:center;
+}
+img{
+	border: black solid 1px;
+}
+.image_div{
+	width:400px;
+}
+.dropimage{
+	background-size: contain !important;
+	background-repeat: no-repeat !important;
+}
+
+.header-container h2, .header-container h3{
+	padding:0;
+}

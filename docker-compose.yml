@@ -1,0 +1,31 @@
+version: "3" # optional since v1.27.0
+services:
+  app:
+    build:
+      context: .
+      #    ports:
+      #      - 7000:7000
+    volumes:
+      - ./img/:/img/
+
+    container_name: stadtgottesdienst
+    restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.frontend.rule=Host:sg.parett.de"
+      - "traefik.frontend.headers.STSSeconds=315360000"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.customFrameOptionsValue=SAMEORIGIN"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.STSPreload=true"
+      - "traefik.frontend.headers.referrerPolicy=strict-origin"
+        #      - "traefik.frontend.headers.contentSecurityPolicy=default-src 'self'"
+      - "traefik.priority=50"
+      - "traefik.enable=true"
+      - "traefik.port=7000"
+networks:
+  web:
+    external: true

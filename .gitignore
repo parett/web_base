@@ -1,0 +1,13 @@
+target
+m2
+docker-config
+.classpath
+.project
+.settings
+.tmp
+.s.PGSQL.5432* 
+workspace
+logfile
+db.sqlite3
+img
+.factorypath
