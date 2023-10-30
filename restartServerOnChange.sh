@@ -1,1 +1,1 @@
-find . -name '*.java' | entr ./debug.sh
+find . -name '*.java' | entr mvn clean install

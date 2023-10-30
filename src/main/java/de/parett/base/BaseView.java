@@ -29,8 +29,7 @@ public class BaseView {
 	private String title;
 
 	@Getter
-	@Setter
-	private DomContent content;
+	private DomContent[] content;
 
 	private DomContent jsLibsToHtmlTag() {
 		return each(
@@ -56,25 +55,27 @@ public class BaseView {
 		this.resourceCssFiles.add(clazz.getPackageName().replace('.', '/') + "/" + file);
 	}
 
-	public BaseView(String title, DomContent content) {
+	public BaseView(String title, DomContent... content) {
 		this.title = title != null ? title : "Change it!";
-		this.content = content != null ? content : div();
+		this.content = content != null ? content : new DomContent[]{div()};
 
 		jsLibs = new LinkedHashSet<>();
 //		jsLibs.add("/static/app.js");
 		jsLibs.add("/webjars/htmx.org/1.9.4/dist/htmx.js");
 		jsLibs.add("/webjars/htmx.org/1.9.4/dist/ext/sse.js");
-		jsLibs.add("/webjars/masonry-layout/4.2.2/dist/masonry.pkgd.js");
-		jsLibs.add("/webjars/imagesloaded/4.1.4/imagesloaded.pkgd.min.js");
+//		jsLibs.add("/webjars/masonry-layout/4.2.2/dist/masonry.pkgd.js");
+//		jsLibs.add("/webjars/imagesloaded/4.1.4/imagesloaded.pkgd.min.js");
 
 		cssFiles = new LinkedHashSet<>();
 		//cssFiles.add("/webjars/purecss/2.0.6/build/pure.css");
 		//cssFiles.add("/webjars/font-awesome/6.1.0/css/all.css");
-		cssFiles.add("/static/main.css");
-		cssFiles.add("/webjars/picnic/7.1.0/picnic.min.css");
+//		cssFiles.add("/static/main.css");
+//		cssFiles.add("/webjars/picnic/7.1.0/picnic.min.css");
 
 		resourceCssFiles = new LinkedHashSet<>();
 	}
+
+	
 
 	protected <T> String valueOrEmptyString(T object, Function<T, String> mapper){
 		return Optional.ofNullable(object)
@@ -116,6 +117,10 @@ public class BaseView {
 		Context ctx = ContextHandler.ctx.get();
 		ctx.contentType(TEXT_HTML_UTF8);
 		ctx.result(html);
+	}
+
+	public void setContent(DomContent... content) {
+		this.content = content;
 	}
 
 }
