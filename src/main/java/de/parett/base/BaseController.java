@@ -6,11 +6,11 @@ import io.javalin.http.Handler;
 public class BaseController {
 
 
-	protected static void get(String path, Handler handler){
-		ApiBuilder.get(path, handler);
+	protected static void get(Path path, Handler handler){
+		ApiBuilder.get(path.getPath(), handler);
 	}
 
-	protected static void post(String path, Handler handler){
-		ApiBuilder.post(path, handler);
+	protected static void post(Path path, Handler handler){
+		ApiBuilder.post(path.getPath(), handler);
 	}
 }
