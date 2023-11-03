@@ -1,5 +1,8 @@
 package de.parett.base.utils;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import io.javalin.http.Context;
 import j2html.attributes.Attribute;
 
@@ -17,6 +20,10 @@ public class HxAttribute{
 		return new Attribute("hx-include", expr);
 	}
 
+	public static Attribute hx_include_by_name(String... names){
+		String value = Stream.of(names).map(name -> String.format("[name='%s']", name)).collect(Collectors.joining(", "));
+		return hx_include(value);
+	}
 	public static Attribute hx_target(String target){
 		return new Attribute("hx-target", target);
 	}

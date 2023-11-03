@@ -5,12 +5,16 @@ import io.javalin.http.Handler;
 
 public class BaseController {
 
-
-	protected static void get(Path path, Handler handler){
+	protected static void get(Path path, Handler handler) {
 		ApiBuilder.get(path.getPath(), handler);
 	}
 
-	protected static void post(Path path, Handler handler){
+	protected static void post(Path path, Handler handler) {
 		ApiBuilder.post(path.getPath(), handler);
 	}
+
+	protected static String getPathParam(String param) {
+		return ContextHandler.ctx.get().pathParam(param);
+	}
+
 }

@@ -3,6 +3,11 @@ package de.parett.base;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.LoggerFactory;
 
 import lombok.Getter;
 
@@ -13,6 +18,11 @@ public class Path {
 
 	private ThreadLocal<String> buildPath = new ThreadLocal<>();
 
+	//private ThreadLocal<Map<String,String>> pathParamMap = new ThreadLocal<>();
+
+	@Getter
+	private Set<String> pathParams = new HashSet<>();
+
 	public Path(String path) {
 		this.path = path;
 	}
@@ -20,15 +30,26 @@ public class Path {
 	public Path addPath(String path) {
 		Path clone = this.clone();
 		clone.ensureTailingSlash();
-		clone.path = this.path + path;
+		clone.path += path;
 		return clone;
 
 	}
 
 	public Path addPathParam(String param) {
 		Path clone = this.clone();
-		clone.path = path + "/{" + param + "}";
+		clone.pathParams.add(param);
+		clone.ensureTailingSlash();
+		clone.path += "{" + param + "}";
 		return clone;
+	}
+
+	public Path setPathParam(String param, String value){
+		
+		String currentPath = getCurrentBuildPath();
+		LoggerFactory.getLogger(Path.class).info("replace param {} in {} with {}", param, currentPath, value);
+		currentPath = currentPath.replace("{"+param+"}", encodeValue(value));
+		buildPath.set(currentPath);
+		return this;
 	}
 
 	public String build() {
@@ -38,7 +59,9 @@ public class Path {
 	}
 
 	protected Path clone() {
-		return new Path(this.path);
+		Path clone = new Path(this.path);
+		clone.pathParams = new HashSet<>(this.pathParams);
+		return clone;
 	}
 
 	public Path setQueryParam(String name, String value) {
