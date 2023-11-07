@@ -82,6 +82,7 @@ public class HxAttribute{
 	public static final Attribute hx_swap_beforebegin = new Attribute("hx-swap", "beforebegin");
 	public static final Attribute hx_swap_beforeend = new Attribute("hx-swap", "beforeend");
 	public static final Attribute hx_swap_afterend = new Attribute("hx-swap", "afterend");
+	public static final Attribute hx_swap_delete = new Attribute("hx-swap", "delete");
 	public static final Attribute hx_push_url = new Attribute("hx-push-url", "true");
 	public static final Attribute hx_push_url(String url){
 		return new Attribute("hx-push-url", url);

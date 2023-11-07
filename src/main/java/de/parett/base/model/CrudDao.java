@@ -22,4 +22,6 @@ public interface CrudDao<T> {
 	@SqlUpdate
 	public void save(@BindBean T entity);
 
+	@SqlUpdate
+	public void delete(@Bind("id") UUID id);
 }
