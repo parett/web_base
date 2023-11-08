@@ -36,12 +36,17 @@ public class HxAttribute{
 	}
 
 	public static Context addTriggerEventToContext(Context ctx, String trigger){
-		ctx.header("HX-TRIGGER", trigger);
+		ctx.res().setHeader("HX-TRIGGER", trigger);
+		return ctx;
+	}
+
+	public static Context addRefreshHeaderToContext(Context ctx){
+		ctx.res().setHeader("HX-Refresh","true");
 		return ctx;
 	}
 
 	public static Context addRedirectHeaderToContext(Context ctx, String path){
-		ctx.header("HX-Redirect", path);
+		ctx.res().setHeader("HX-Redirect", path);
 		return ctx;
 	}
 
