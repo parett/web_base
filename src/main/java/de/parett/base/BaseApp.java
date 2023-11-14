@@ -1,15 +1,21 @@
 package de.parett.base;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 import org.eclipse.jetty.server.session.DatabaseAdaptor;
 import org.eclipse.jetty.server.session.DefaultSessionCache;
 import org.eclipse.jetty.server.session.JDBCSessionDataStoreFactory;
 import org.eclipse.jetty.server.session.SessionCache;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.jdbi.v3.core.ConnectionFactory;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
+import org.jdbi.v3.core.statement.SqlLogger;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlite3.SQLitePlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.slf4j.Logger;
@@ -27,20 +33,12 @@ public abstract class BaseApp {
 
 	public static Jdbi jdbi;
 	private static final String dbUrl = "jdbc:sqlite:./db.sqlite3";
-	private static final SQLiteDataSource ds = new SQLiteDataSource();
+	protected static final SQLiteDataSource ds = new SQLiteDataSource();
 
 	private static Logger LOGGER = LoggerFactory.getLogger(BaseApp.class);
 	private static ConcurrentLinkedQueue<SseClient> clients = new ConcurrentLinkedQueue<>();
 
 	static {
-
-		ds.setUrl(dbUrl);
-		ds.setEnforceForeignKeys(true);
-
-		jdbi = Jdbi.create(ds);
-		jdbi.installPlugin(new SqlObjectPlugin());
-		jdbi.installPlugin(new SQLitePlugin());
-		jdbi.setSqlLogger(new Slf4JSqlLogger(LOGGER));
 
 	}
 
@@ -73,6 +71,46 @@ public abstract class BaseApp {
 	}
 
 	public BaseApp() {
+
+		ds.setUrl(dbUrl);
+		ds.setEnforceForeignKeys(true);
+
+		jdbi = Jdbi.create(new ConnectionFactory() {
+
+			@Override
+			public Connection openConnection() throws SQLException {
+				Connection connection = ds.getConnection();
+				configureConnection(connection);
+				return connection;
+			}
+		});
+		jdbi.installPlugin(new SqlObjectPlugin());
+		jdbi.installPlugin(new SQLitePlugin());
+		// jdbi.setSqlLogger(new Slf4JSqlLogger(LOGGER));
+	//	jdbi.setSqlLogger(new SqlLogger() {
+
+	//		@Override
+	//		public void logAfterExecution(StatementContext context) {
+	//			// TODO Auto-generated method stub
+	//			SqlLogger.super.logAfterExecution(context);
+	//		}
+
+	//		@Override
+	//		public void logBeforeExecution(StatementContext context) {
+	//			LOGGER.info(context.getParsedSql().toString());
+	//			LOGGER.info(context.getParsedSql().getParameters().getParameterNames().stream().map(p -> {
+	//				return p + " " + context.getBinding().findForName(p, context).get().toString();
+	//			}).collect(Collectors.joining(", ")));
+	//		}
+
+	//		@Override
+	//		public void logException(StatementContext context, SQLException ex) {
+	//			// TODO Auto-generated method stub
+	//			SqlLogger.super.logException(context, ex);
+	//		}
+
+	//	});
+
 		SessionHandler sessionHandler = new SessionHandler();
 		SessionCache sessionCache = new DefaultSessionCache(sessionHandler);
 		sessionCache.setSessionDataStore(jdbcDataStoreFactory().getSessionDataStore(sessionHandler));
@@ -135,7 +173,11 @@ public abstract class BaseApp {
 	}
 
 	protected abstract void initRoutes();
+
 	protected abstract void configure(JavalinConfig config);
+
 	protected abstract void init(Javalin app);
+
+	protected abstract void configureConnection(Connection connection);
 
 }
