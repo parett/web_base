@@ -55,6 +55,9 @@ public class HxAttribute{
 		return ctx;
 	}
 
+	public static final Attribute hx_vals(String key, String value){
+		return hx_vals(String.format("{\"%s\":\"%s\"}", key, value));
+	}
 	public static final Attribute hx_vals(String expr){
 		return new Attribute("hx-vals", expr);
 	}
