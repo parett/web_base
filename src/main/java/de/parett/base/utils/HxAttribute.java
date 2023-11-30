@@ -3,15 +3,24 @@ package de.parett.base.utils;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.parett.base.Path;
 import io.javalin.http.Context;
 import j2html.attributes.Attribute;
 
 public class HxAttribute{
 
+	public static Attribute hx_get(Path path){
+		return hx_get(path.build());
+	}
+
 	public static Attribute hx_get(String path){
 		return new Attribute("hx-get", path);
 	}
 	
+	public static Attribute hx_delete(Path path){
+		return hx_delete(path.build());
+	}
+
 	public static Attribute hx_delete(String path){
 		return new Attribute("hx-delete", path);
 	}
@@ -30,6 +39,10 @@ public class HxAttribute{
 
 	public static Attribute hx_target_body = hx_target("body");
 
+
+	public static Attribute hx_post(Path path){
+		return hx_post(path.build());
+	}
 
 	public static Attribute hx_post(String path){
 		return new Attribute("hx-post", path);
